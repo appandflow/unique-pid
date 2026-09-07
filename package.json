@@ -1,6 +1,6 @@
 {
   "name": "unique-pid",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unique, serializable process IDs for Node.js",
   "type": "module",
   "gypfile": false,
@@ -34,6 +34,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test test/identity.test.mjs test/linux.test.mjs test/loading.test.mjs",
+    "test:sandbox": "node scripts/test-darwin-sandbox.mjs",
     "test:package": "node scripts/package-smoke.mjs",
     "pack:release": "node scripts/pack-release.mjs",
     "typecheck": "tsc --noEmit",
