@@ -28,6 +28,9 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm test
+      - name: Hidden live processes fail closed
+        if: runner.os == 'Linux'
+        run: sudo unshare --mount --pid --fork --mount-proc sh -c 'mount -o remount,hidepid=2 /proc; exec "$@"' sh "$(command -v node)" test/hidepid.fixture.mjs
       - run: npm run test:package
       - uses: actions/setup-node@v4
         with:
