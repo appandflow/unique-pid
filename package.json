@@ -1,0 +1,48 @@
+{
+  "name": "unique-pid",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Persist and verify OS-backed process identities without ps",
+  "type": "module",
+  "gypfile": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "os": [
+    "darwin"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.mts",
+      "import": "./index.mjs"
+    }
+  },
+  "files": [
+    "index.mjs",
+    "index.d.mts",
+    "prebuilds",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appandflow/unique-pid.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "test": "node test/identity.mjs",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "node-gyp-build": "4.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "node-gyp": "^11.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}
