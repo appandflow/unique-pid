@@ -1,15 +1,16 @@
 {
   "name": "unique-pid",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Persist and verify OS-backed process identities without ps",
+  "version": "0.1.0",
+  "description": "Unique, serializable process IDs for Node.js",
   "type": "module",
   "gypfile": false,
   "engines": {
-    "node": ">=22"
+    "node": "^20.19.4 || >=22.12.0"
   },
   "os": [
-    "darwin"
+    "darwin",
+    "linux",
+    "win32"
   ],
   "exports": {
     ".": {
@@ -20,6 +21,7 @@
   "files": [
     "index.mjs",
     "index.d.mts",
+    "lib",
     "prebuilds",
     "LICENSE",
     "README.md"
@@ -30,8 +32,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "node-gyp rebuild",
-    "test": "node test/identity.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/identity.test.mjs test/linux.test.mjs test/loading.test.mjs",
+    "test:package": "node scripts/package-smoke.mjs",
+    "pack:release": "node scripts/pack-release.mjs",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -41,7 +45,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "node-gyp": "^11.0.0",
+    "node-gyp": "^12.4.0",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
   }

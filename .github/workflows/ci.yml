@@ -3,8 +3,20 @@ on: [push, pull_request]
 permissions:
   contents: read
 jobs:
-  macos:
-    runs-on: macos-latest
+  platforms:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          [
+            macos-latest,
+            macos-15-intel,
+            ubuntu-latest,
+            ubuntu-24.04-arm,
+            windows-latest,
+            windows-11-arm,
+          ]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,6 +28,14 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm test
+      - name: Hidden live processes fail closed
+        if: runner.os == 'Linux'
+        run: |
+          fixture=$(mktemp -d)
+          cp -R index.mjs lib test "$fixture/"
+          chmod -R a+rX "$fixture"
+          sudo unshare --mount --pid --fork --mount-proc sh -c 'mount -o remount,hidepid=2 /proc; exec "$@"' sh "$(command -v node)" "$fixture/test/hidepid.fixture.mjs"
+      - run: npm run test:package
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -24,3 +44,33 @@ jobs:
         with:
           node-version: 26
       - run: npm test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.4
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: runner.os != 'Linux'
+        with:
+          name: prebuild-${{ runner.os }}-${{ runner.arch }}
+          path: prebuilds/
+  package:
+    needs: platforms
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: prebuild-*
+          path: prebuilds
+          merge-multiple: true
+      - run: npm run pack:release
+      - run: npm run test:package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: unique-pid-*.tgz
