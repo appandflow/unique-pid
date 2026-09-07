@@ -3,8 +3,20 @@ on: [push, pull_request]
 permissions:
   contents: read
 jobs:
-  macos:
-    runs-on: macos-latest
+  platforms:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          [
+            macos-latest,
+            macos-15-intel,
+            ubuntu-latest,
+            ubuntu-24.04-arm,
+            windows-latest,
+            windows-11-arm,
+          ]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,6 +28,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm test
+      - run: npm run test:package
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -24,3 +37,12 @@ jobs:
         with:
           node-version: 26
       - run: npm test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.4
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: runner.os != 'Linux'
+        with:
+          name: prebuild-${{ runner.os }}-${{ runner.arch }}
+          path: prebuilds/
