@@ -1,8 +1,7 @@
 {
   "name": "unique-pid",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Persist and verify OS-backed process identities without ps",
+  "version": "0.1.0",
+  "description": "Unique, serializable process IDs for Node.js",
   "type": "module",
   "gypfile": false,
   "engines": {
@@ -36,6 +35,7 @@
     "build": "node scripts/build.mjs",
     "test": "node --test test/identity.test.mjs test/linux.test.mjs test/loading.test.mjs",
     "test:package": "node scripts/package-smoke.mjs",
+    "pack:release": "node scripts/pack-release.mjs",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

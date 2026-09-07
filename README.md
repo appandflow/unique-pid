@@ -55,4 +55,8 @@ npm run format:check
 npm test
 ```
 
+CI builds and tests x64 and ARM64 binaries for macOS and Windows, then
+assembles the release tarball with `npm run pack:release`. Installing that
+package needs no compiler or install scripts. Linux reads procfs directly.
+
 MIT
