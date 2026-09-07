@@ -43,7 +43,7 @@ signal atomic. This package does not terminate processes.
 
 ## Development
 
-Not released to npm yet. Node 20.19.4+ (20.x) or 22.12+. Native development
+Node 20.19.4+ (20.x) or 22.12+. Native development
 builds require Python and Xcode Command Line Tools on macOS, or Visual Studio
 C++ Build Tools on Windows. Linux reads procfs directly.
 

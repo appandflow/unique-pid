@@ -34,7 +34,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test test/identity.test.mjs test/linux.test.mjs test/loading.test.mjs",
     "test:package": "node scripts/package-smoke.mjs",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "node-gyp": "^11.0.0",
+    "node-gyp": "^12.4.0",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
   }
