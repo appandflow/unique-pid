@@ -34,8 +34,11 @@ binaries, and permission failures are results, not thrown exceptions.
 
 An inspection error is not proof that a process is gone. Tokens use exact
 OS start values, not approximate dates. Linux also includes boot and PID
-namespace identity; macOS includes boot identity. Windows uses the process's
-64-bit creation time.
+namespace identity. macOS uses the process's microsecond start timestamp and
+includes boot identity when permitted. Windows uses the process's 64-bit
+creation time. Without boot identity, a repeated PID and exact timestamp
+after a reboot or clock reset cannot be distinguished. A saved macOS token
+with boot identity still requires permission to verify that identity.
 
 Tokens belong in trusted state on the originating machine. They are not
 credentials. Identity checks do not prove ownership or make a later PID-based

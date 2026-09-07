@@ -28,6 +28,9 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm test
+      - name: macOS sandbox process identity
+        if: runner.os == 'macOS'
+        run: npm run test:sandbox
       - name: Hidden live processes fail closed
         if: runner.os == 'Linux'
         run: |

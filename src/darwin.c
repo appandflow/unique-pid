@@ -18,11 +18,12 @@ void observe_process(unsigned int pid, struct identity *result) {
   if (bsd.pbi_pid != pid || bsd.pbi_start_tvusec >= 1000000) return;
   size_t size = sizeof(result->boot);
   if (sysctlbyname("kern.bootsessionuuid", result->boot, &size, NULL, 0) != 0) {
-    result->status = errno == EPERM || errno == EACCES ? "denied" : "unknown";
-    return;
+    if (errno != EPERM && errno != EACCES) return;
+    result->boot[0] = '\0';
+  } else {
+    if (size < 2 || size > sizeof(result->boot) || result->boot[size - 1] != '\0') return;
+    for (size_t i = 0; i < size; i++) result->boot[i] = (char)tolower((unsigned char)result->boot[i]);
   }
-  if (size < 2 || size > sizeof(result->boot) || result->boot[size - 1] != '\0') return;
-  for (size_t i = 0; i < size; i++) result->boot[i] = (char)tolower((unsigned char)result->boot[i]);
   snprintf(result->start, sizeof(result->start), "%" PRIu64 ":%" PRIu64,
     bsd.pbi_start_tvsec, bsd.pbi_start_tvusec);
   result->status = "found";

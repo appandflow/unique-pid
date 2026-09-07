@@ -36,6 +36,8 @@ test("exact identity survives serialization, fresh readers, and title changes", 
     assert.equal(other.status, 0, other.stderr);
     assert.deepEqual(JSON.parse(other.stdout), { ok: true, value: "same" });
     const identity = decode(token).value;
+    if (process.env.EXPECT_BOOT_DENIED === "1")
+      assert.equal(identity.bootId, null);
     const parts = identity.startTime.split(":");
     if (parts.length === 2)
       parts[1] = String((BigInt(parts[1]) + 1n) % 1000000n);
@@ -136,6 +138,8 @@ test("invalid token schemas, encodings, and precision loss are rejected", () => 
     { startTime: "123:1000000" },
     { startTime: "18446744073709551616:0" },
     { startTime: 123 },
+    { bootId: 123 },
+    { bootId: "" },
     { surprise: true },
   ]) {
     assert.equal(

@@ -84,14 +84,18 @@ export function check(token) {
         "INSPECTION_FAILED",
         "The OS returned an invalid identity",
       );
-    return {
-      ok: true,
-      value:
-        observed.value.startTime === decoded.value.startTime &&
-        observed.value.bootId === decoded.value.bootId
-          ? "same"
-          : "different",
-    };
+    if (observed.value.startTime !== decoded.value.startTime)
+      return { ok: true, value: "different" };
+    if (decoded.value.bootId !== null) {
+      if (observed.value.bootId === null)
+        return failure(
+          "ACCESS_DENIED",
+          "The saved boot identity could not be verified",
+        );
+      if (observed.value.bootId !== decoded.value.bootId)
+        return { ok: true, value: "different" };
+    }
+    return { ok: true, value: "same" };
   } catch {
     return failure(
       "INSPECTION_FAILED",
